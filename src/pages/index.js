@@ -37,7 +37,6 @@ export const query = graphql`
         blocktype
         ...HomepageHeroContent
         ...HomepageCtaContent
-        ...HomepageBenefitListContent
       }
     }
   }
