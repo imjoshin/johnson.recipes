@@ -447,14 +447,6 @@ export const navButtonlink = style({
   },
 })
 
-export const ctaLink = style({
-  color: "inherit",
-  fontWeight: theme.fontWeights.bold,
-  ":hover": {
-    color: theme.colors.active,
-  },
-})
-
 export const blockLink = style({
   display: "block",
   color: "inherit",

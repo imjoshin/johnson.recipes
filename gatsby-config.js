@@ -6,10 +6,10 @@ require("dotenv").config({
 
 module.exports = {
   siteMetadata: {
-    siteUrl: "https://gatsbycontentfulhomepage.gatsbyjs.io/",
-    title: "Gatsby Contentful Homepage Starter",
-    author: `Gatsby`,
-    description: "A Gatsby Starter for building homepages with Contentful",
+    siteUrl: "https://johnson.recipes/",
+    title: "Johnson Recipes",
+    author: `imjoshin`,
+    description: "Recipes from the Johnson house.",
   },
   plugins: [
     {
@@ -28,8 +28,8 @@ module.exports = {
     {
       resolve: "gatsby-plugin-manifest",
       options: {
-        name: "Gatsby Starter Contentful Homepage",
-        short_name: "Gatsby",
+        name: "Johnson Recipes",
+        short_name: "Johnson Recipes",
         start_url: "/",
         // These can be imported once ESM support lands
         background_color: "#ffe491",
