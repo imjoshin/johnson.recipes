@@ -180,6 +180,34 @@ exports.createSchemaCustomization = async ({ actions }) => {
       image: HomepageImage
       html: String!
     }
+
+    interface Creator implements Node {
+      id: ID!
+      name: String!
+      avatar: HomepageImage
+      bio: String
+    }
+
+    interface Recipe implements Node {
+      id: ID!
+      title: String!
+      description: String
+      image: HomepageImage
+      ingredients: String
+      preparationTime: Int
+      cookingTime: Int
+      totalTime: Int
+      servings: Int
+      calories: Int
+      tags: [String]
+      creator: Creator
+    }
+
+    interface RecipeGroup implements Node {
+      id: ID!
+      name: String!
+      recipes: [Recipe]
+    }
   `)
 
   // CMS-specific types for Homepage
