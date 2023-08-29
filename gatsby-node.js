@@ -203,8 +203,9 @@ exports.createSchemaCustomization = async ({ actions }) => {
       creator: Creator
     }
 
-    interface RecipeGroup implements Node {
+    interface RecipeGroup implements Node & HomepageBlock {
       id: ID!
+      blocktype: String
       name: String!
       recipes: [Recipe]
     }
@@ -263,6 +264,38 @@ exports.createSchemaCustomization = async ({ actions }) => {
       description: String
       image: HomepageImage @link(from: "image___NODE")
       content: [HomepageBlock] @link(from: "content___NODE")
+    }
+
+    type ContentfulRecipeGroup implements Node & RecipeGroup & HomepageBlock
+      @dontInfer {
+      id: ID!
+      blocktype: String @blocktype
+      name: String!
+      recipes: [Recipe] @link(from: "recipes___NODE")
+    }
+
+    type ContentfulRecipe implements Node & Recipe
+      @dontInfer {
+      id: ID!
+      title: String!
+      description: String
+      image: HomepageImage @link(from: "image___NODE")
+      ingredients: String
+      preparationTime: Int
+      cookingTime: Int
+      totalTime: Int
+      servings: Int
+      calories: Int
+      tags: [String]
+      creator: Creator
+    }
+
+    type ContentfulCreator implements Node & Creator
+      @dontInfer {
+      id: ID!
+      name: String!
+      avatar: HomepageImage @link(from: "image___NODE")
+      bio: String
     }
   `)
 

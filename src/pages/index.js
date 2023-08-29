@@ -36,6 +36,7 @@ export const query = graphql`
         id
         blocktype
         ...HomepageHeroContent
+        ...RecipeGroupContent
       }
     }
   }
