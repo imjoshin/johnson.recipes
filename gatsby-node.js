@@ -1,5 +1,6 @@
 const { documentToHtmlString } = require("@contentful/rich-text-html-renderer")
-const { getGatsbyImageResolver } = require("gatsby-plugin-image/graphql-utils")
+const { getGatsbyImageResolver } = require("gatsby-plugin-image/graphql-utils");
+const { default: slugify } = require("slugify");
 
 exports.createSchemaCustomization = async ({ actions }) => {
   actions.createFieldExtension({
@@ -341,8 +342,8 @@ exports.createSchemaCustomization = async ({ actions }) => {
   `)
 }
 
-exports.createPages = ({ actions }) => {
-  const { createSlice } = actions
+exports.createPages = async ({ actions, graphql, reporter }) => {
+  const { createSlice, createPage } = actions
   createSlice({
     id: "header",
     component: require.resolve("./src/components/header.js"),
@@ -351,5 +352,58 @@ exports.createPages = ({ actions }) => {
     id: "footer",
     component: require.resolve("./src/components/footer.js"),
   })
+
+  const result = await graphql(`
+    {
+      allContentfulRecipe {
+        nodes {
+          id
+          title
+        }
+      }
+    }
+  `);
+
+  if (result.errors) {
+    reporter.panicOnBuild(
+      `There was an error loading your recipes`,
+      result.errors
+    );
+    return;
+  }
+
+  const recipes = result.data.allContentfulRecipe.nodes;
+  const recipe = require.resolve("./src/templates/recipe.js");
+
+  // Create blog posts pages
+  // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
+  // `context` is available in the template as a prop and as a variable in GraphQL
+
+  if (recipes.length > 0) {
+
+    recipes.forEach(({ title, id }, index) => {
+      const slug = slugify(title, {
+        replacement: '-',  // replace spaces with replacement character, defaults to `-`
+        remove: undefined, // remove characters that match regex, defaults to `undefined`
+        lower: true,       // convert to lower case, defaults to `false`
+        strict: true,      // strip special characters except replacement, defaults to `false`
+        trim: true         // trim leading and trailing replacement chars, defaults to `true`
+      });
+
+      const previousPostId = index === 0 ? null : recipes[index - 1].id;
+      const nextPostId = index === recipes.length - 1 ? null : recipes[index + 1].id;
+
+      reporter.info(`Created /${slug}`);
+      createPage({
+        path: `/${slug}`,
+        component: recipe,
+        context: {
+          id,
+          previousPostId,
+          nextPostId,
+        },
+      });
+    });
+  }
 }
       
