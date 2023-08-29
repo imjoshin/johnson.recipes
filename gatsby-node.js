@@ -1,6 +1,7 @@
 const { documentToHtmlString } = require("@contentful/rich-text-html-renderer")
 const { getGatsbyImageResolver } = require("gatsby-plugin-image/graphql-utils");
 const { default: slugify } = require("slugify");
+const { getSlug } = require("./src/util");
 
 exports.createSchemaCustomization = async ({ actions }) => {
   actions.createFieldExtension({
@@ -382,13 +383,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   if (recipes.length > 0) {
 
     recipes.forEach(({ title, id }, index) => {
-      const slug = slugify(title, {
-        replacement: '-',  // replace spaces with replacement character, defaults to `-`
-        remove: undefined, // remove characters that match regex, defaults to `undefined`
-        lower: true,       // convert to lower case, defaults to `false`
-        strict: true,      // strip special characters except replacement, defaults to `false`
-        trim: true         // trim leading and trailing replacement chars, defaults to `true`
-      });
+      const slug = getSlug(title);
 
       const previousId = index === 0 ? null : recipes[index - 1].id;
       const nextId = index === recipes.length - 1 ? null : recipes[index + 1].id;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { graphql } from "gatsby";
+import { Link, graphql } from "gatsby";
 import {
     Container,
     Section,
@@ -10,6 +10,7 @@ import {
     Text,
     Space,
 } from "./ui";
+import { getSlug } from "../util";
 
 function Recipe(props) {
     return (
@@ -22,7 +23,7 @@ function Recipe(props) {
                 />
             )}
             <Space size={2} />
-            <Heading variant="subheadSmall">{props.title}</Heading>
+            <Heading variant="subheadSmall"><Link to={getSlug(props.title)}>{props.title}</Link></Heading>
             <Text>{props.description}</Text>
         </Box>
     );
