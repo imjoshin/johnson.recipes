@@ -390,8 +390,8 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
         trim: true         // trim leading and trailing replacement chars, defaults to `true`
       });
 
-      const previousPostId = index === 0 ? null : recipes[index - 1].id;
-      const nextPostId = index === recipes.length - 1 ? null : recipes[index + 1].id;
+      const previousId = index === 0 ? null : recipes[index - 1].id;
+      const nextId = index === recipes.length - 1 ? null : recipes[index + 1].id;
 
       reporter.info(`Created /${slug}`);
       createPage({
@@ -399,8 +399,8 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
         component: recipe,
         context: {
           id,
-          previousPostId,
-          nextPostId,
+          previousId,
+          nextId,
         },
       });
     });

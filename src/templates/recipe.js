@@ -13,6 +13,7 @@ import {
 import { avatar as avatarStyle } from "../components/ui.css";
 import * as styles from "./blog-post.css";
 import SEOHead from "../components/head";
+import { graphql } from 'gatsby';
 
 export default function Recipe(props) {
     const author = false && props.author && (
@@ -61,6 +62,9 @@ export default function Recipe(props) {
                             __html: props.html,
                         }}
                     />
+                    <pre>
+                        {JSON.stringify(props, null, 2)}
+                    </pre>
                 </Box>
             </Container>
         </Layout>
@@ -69,3 +73,30 @@ export default function Recipe(props) {
 export const Head = (props) => {
     return <SEOHead {...props} description={props.description} />;
 };
+
+
+export const pageQuery = graphql`
+query RecipeById(
+    $id: String!
+    $previousId: String
+    $nextId: String
+) {
+    recipe(id: {eq: $id }) {
+        calories
+        cookingTime
+        description
+        ingredients
+        preparationTime
+        servings
+        tags
+        title
+        totalTime
+    }
+    previous: recipe(id: {eq: $previousId }) {
+        title
+    }
+    next: recipe(id: {eq: $nextId }) {
+        title
+    }
+}
+`;
