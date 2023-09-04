@@ -1,15 +1,16 @@
-import * as React from "react"
-import "../styles.css"
-import { Slice } from "gatsby"
+import * as React from "react";
+import "../styles.css";
+import Header from "./header";
+import Footer from "./footer";
 
 const Layout = ({ children }) => {
   return (
     <>
-      <Slice alias="header" />
+      <Header />
       {children}
-      <Slice alias="footer" />
+      <Footer />
     </>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

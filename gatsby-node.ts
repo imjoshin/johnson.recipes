@@ -1,7 +1,8 @@
-const { documentToHtmlString } = require("@contentful/rich-text-html-renderer")
+const { documentToHtmlString } = require("@contentful/rich-text-html-renderer");
 const { getGatsbyImageResolver } = require("gatsby-plugin-image/graphql-utils");
 const { default: slugify } = require("slugify");
-const { getSlug } = require("./src/util");
+import { getSlug } from "./src/util";
+import path from "path";
 
 exports.createSchemaCustomization = async ({ actions }) => {
   actions.createFieldExtension({
@@ -9,37 +10,37 @@ exports.createSchemaCustomization = async ({ actions }) => {
     extend(options) {
       return {
         resolve(source) {
-          return source.internal.type.replace("Contentful", "")
+          return source.internal.type.replace("Contentful", "");
         },
-      }
+      };
     },
-  })
+  });
 
   actions.createFieldExtension({
     name: "imagePassthroughArgs",
     extend(options) {
-      const { args } = getGatsbyImageResolver()
+      const { args } = getGatsbyImageResolver();
       return {
         args,
-      }
+      };
     },
-  })
+  });
 
   actions.createFieldExtension({
     name: "imageUrl",
     extend(options) {
-      const schemaRE = /^\/\//
+      const schemaRE = /^\/\//;
       const addURLSchema = (str) => {
-        if (schemaRE.test(str)) return `https:${str}`
-        return str
-      }
+        if (schemaRE.test(str)) return `https:${str}`;
+        return str;
+      };
       return {
         resolve(source) {
-          return addURLSchema(source.file.url)
+          return addURLSchema(source.file.url);
         },
-      }
+      };
     },
-  })
+  });
 
   actions.createFieldExtension({
     name: "navItemType",
@@ -54,28 +55,28 @@ exports.createSchemaCustomization = async ({ actions }) => {
         resolve() {
           switch (options.name) {
             case "Group":
-              return "Group"
+              return "Group";
             default:
-              return "Link"
+              return "Link";
           }
         },
-      }
+      };
     },
-  })
+  });
 
   actions.createFieldExtension({
     name: "richText",
     extend(options) {
       return {
         resolve(source, args, context, info) {
-          const body = source.body
-          const doc = JSON.parse(body.raw)
-          const html = documentToHtmlString(doc)
-          return html
+          const body = source.body;
+          const doc = JSON.parse(body.raw);
+          const html = documentToHtmlString(doc);
+          return html;
         },
-      }
+      };
     },
-  })
+  });
 
   // abstract interfaces
   actions.createTypes(/* GraphQL */ `
@@ -211,7 +212,7 @@ exports.createSchemaCustomization = async ({ actions }) => {
       name: String!
       recipes: [Recipe]
     }
-  `)
+  `);
 
   // CMS-specific types for Homepage
   actions.createTypes(/* GraphQL */ `
@@ -299,7 +300,7 @@ exports.createSchemaCustomization = async ({ actions }) => {
       avatar: HomepageImage @link(from: "image___NODE")
       bio: String
     }
-  `)
+  `);
 
   // Layout types
   actions.createTypes(/* GraphQL */ `
@@ -328,7 +329,7 @@ exports.createSchemaCustomization = async ({ actions }) => {
       header: LayoutHeader @link(from: "header___NODE")
       footer: LayoutFooter @link(from: "footer___NODE")
     }
-  `)
+  `);
 
   // Page types
   actions.createTypes(/* GraphQL */ `
@@ -340,19 +341,11 @@ exports.createSchemaCustomization = async ({ actions }) => {
       image: HomepageImage @link(from: "image___NODE")
       html: String! @richText
     }
-  `)
-}
+  `);
+};
 
 exports.createPages = async ({ actions, graphql, reporter }) => {
-  const { createSlice, createPage } = actions
-  createSlice({
-    id: "header",
-    component: require.resolve("./src/components/header.js"),
-  })
-  createSlice({
-    id: "footer",
-    component: require.resolve("./src/components/footer.js"),
-  })
+  const { createPage } = actions;
 
   const result = await graphql(`
     {
@@ -374,7 +367,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   }
 
   const recipes = result.data.allContentfulRecipe.nodes;
-  const recipe = require.resolve("./src/templates/recipe.js");
+  const recipe = path.resolve("./src/templates/recipe.js");
 
   // Create blog posts pages
   // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
@@ -400,5 +393,4 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
       });
     });
   }
-}
-      
+};
